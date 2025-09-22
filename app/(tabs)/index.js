@@ -1,487 +1,508 @@
-// app/(tabs)/index.js
-import React, { useState } from "react";
+import React from "react";
 import {
   View,
   Text,
   StyleSheet,
   ScrollView,
   TouchableOpacity,
-  Modal,
-  TextInput,
-  FlatList,
-  Alert,
-  ActivityIndicator,
+  ImageBackground,
+  Image,
+  Dimensions,
 } from "react-native";
-import { router } from "expo-router";
+import { useRouter } from "expo-router";
+
+const { width } = Dimensions.get("window");
 
 export default function HomeScreen() {
-  const [showAIAssistant, setShowAIAssistant] = useState(false);
-  const [messages, setMessages] = useState([]);
-  const [inputMessage, setInputMessage] = useState("");
-  const [aiLoading, setAiLoading] = useState(false);
-  const [isListening, setIsListening] = useState(false);
+  const router = useRouter();
 
-  // AI Response Database
-  const aiResponses = {
-    "pest control":
-      "For natural pest control, I recommend:\n\n🌿 Neem oil spray (10ml per liter water)\n🐞 Introduce beneficial insects like ladybugs\n⏰ Apply early morning or evening\n🚫 Avoid spraying during flowering to protect pollinators",
-
-    fertilizer:
-      "For healthy crop growth:\n\n🌱 Organic: Use compost (2-3 tons/hectare)\n🪱 Vermicompost (1 ton/hectare)\n🌾 Green manure crops\n⚗️ Chemical: Follow soil test - typically 120:60:40 NPK for wheat",
-
-    irrigation:
-      "Water management tips:\n\n🌾 Rice: Maintain 2-5cm standing water\n🌾 Wheat: 4-6 irrigations during season\n💧 Drip irrigation saves 30-50% water\n⏰ Water early morning or evening",
-
-    disease:
-      "Disease management:\n\n🔍 Weekly plant inspection\n🛡️ Use resistant varieties\n🔄 Practice crop rotation\n🧪 Copper-based fungicides for fungal diseases\n📞 Contact agricultural officer for severe cases",
-
-    weather:
-      "Weather-based farming:\n\n📱 Check forecasts daily\n☔ Avoid spraying before rains\n🧊 Use nets to protect from hail\n🌡️ Adjust irrigation based on rainfall",
-
-    "market price":
-      "Market guidance:\n\n📊 Check eNAM portal daily\n💰 Sell during peak demand\n📈 Consider value addition\n🏪 Connect with local mandis\n📱 Use market price apps",
-
-    "soil health":
-      "Soil health tips:\n\n🧪 Test soil pH (ideal: 6.5-7.5)\n🌱 Maintain organic matter >1.5%\n🧊 Add lime for acidic soils\n⚪ Use gypsum for alkaline soils\n📅 Test annually",
-
-    "crop rotation":
-      "Rotation benefits:\n\n1️⃣ Legumes (nitrogen fixation)\n2️⃣ Cereals (main crop)\n3️⃣ Cash crops (income)\n4️⃣ Fodder crops (livestock)\n\nThis improves soil fertility and breaks pest cycles.",
+  // Sample data for dashboard
+  const weatherData = {
+    temperature: "28°C",
+    condition: "Sunny",
+    humidity: "65%",
+    rainfall: "2.5mm",
   };
 
-  const quickQuestions = [
-    "🌱 Best crops for this season?",
-    "🐛 How to control pests naturally?",
-    "💧 When should I irrigate?",
-    "🌡️ Weather impact on crops?",
-    "💰 Current market prices?",
-    "🌾 Soil health improvement?",
+  const quickStats = [
+    { label: "Active Crops", value: "12", icon: "🌾", color: "#4CAF50" },
+    { label: "Soil Health", value: "Good", icon: "🌱", color: "#FF9800" },
+    { label: "Market Price", value: "₹2,450", icon: "💰", color: "#2196F3" },
+    { label: "Alerts", value: "3", icon: "⚠️", color: "#F44336" },
   ];
 
-  React.useEffect(() => {
-    if (showAIAssistant && messages.length === 0) {
-      setMessages([
-        {
-          id: "1",
-          text: "🌾 Welcome to Savior AI Assistant! 🤖\n\nI can help you with:\n• Crop selection & planning\n• Pest & disease management\n• Irrigation scheduling\n• Weather guidance\n• Market price updates\n• Soil health tips\n• Fertilizer recommendations\n\nWhat farming question do you have today?",
-          sender: "ai",
-          timestamp: new Date(),
-        },
-      ]);
-    }
-  }, [showAIAssistant]);
+  const farmingTasks = [
+    { task: "Water tomato plants", time: "8:00 AM", priority: "high" },
+    { task: "Check pest control", time: "10:30 AM", priority: "medium" },
+    { task: "Harvest wheat crop", time: "4:00 PM", priority: "high" },
+    { task: "Apply fertilizer", time: "6:00 PM", priority: "low" },
+  ];
 
-  const generateAIResponse = (query) => {
-    const lowerQuery = query.toLowerCase();
-
-    // Check for specific keywords
-    for (const [keyword, response] of Object.entries(aiResponses)) {
-      if (
-        lowerQuery.includes(keyword) ||
-        lowerQuery.includes(keyword.replace(" ", ""))
-      ) {
-        return response;
-      }
-    }
-
-    // General farming responses
-    if (lowerQuery.includes("crop") || lowerQuery.includes("plant")) {
-      return "🌱 For crop selection, consider:\n\n• Local climate conditions\n• Soil type and pH\n• Market demand\n• Water availability\n• Your experience level\n\nWhich specific crop are you interested in?";
-    }
-
-    if (lowerQuery.includes("help") || lowerQuery.includes("assist")) {
-      return "🤝 I'm here to help! I can assist with:\n\n• Farming techniques\n• Problem diagnosis\n• Best practices\n• Seasonal advice\n• Resource management\n\nPlease describe your specific farming challenge.";
-    }
-
-    if (lowerQuery.includes("profit") || lowerQuery.includes("income")) {
-      return "💰 To increase farm profits:\n\n• Choose high-value crops\n• Reduce input costs\n• Improve yield quality\n• Direct marketing\n• Value addition\n• Crop insurance\n\nWhat's your current farming situation?";
-    }
-
-    // Default response
-    return `🤔 I understand you're asking about "${query}". \n\nCould you be more specific? I can help with:\n\n🌾 Crop management\n🐛 Pest control\n💧 Irrigation\n🌡️ Weather planning\n💰 Market guidance\n🌱 Soil health\n\nOr tap one of the quick questions below!`;
-  };
-
-  const handleAIQuery = async (message) => {
-    if (!message.trim()) return;
-
-    const userMessage = {
-      id: Date.now().toString(),
-      text: message,
-      sender: "user",
-      timestamp: new Date(),
-    };
-
-    setMessages((prev) => [...prev, userMessage]);
-    setInputMessage("");
-    setAiLoading(true);
-
-    // Simulate AI processing delay
-    setTimeout(() => {
-      const response = generateAIResponse(message);
-      const aiMessage = {
-        id: (Date.now() + 1).toString(),
-        text: response,
-        sender: "ai",
-        timestamp: new Date(),
-      };
-
-      setMessages((prev) => [...prev, aiMessage]);
-      setAiLoading(false);
-    }, 1500);
-  };
-
-  const handleQuickQuestion = (question) => {
-    handleAIQuery(question);
-  };
-
-  const startVoiceInput = () => {
-    setIsListening(true);
-    // Mock voice input - in real app, integrate with speech-to-text
-    setTimeout(() => {
-      setIsListening(false);
-      Alert.alert(
-        "Voice Input",
-        "Voice feature coming soon! For now, please type your question."
-      );
-    }, 2000);
-  };
-
-  const renderMessage = ({ item }) => (
-    <View
-      style={[
-        styles.messageContainer,
-        item.sender === "user" ? styles.userMessage : styles.aiMessage,
-      ]}
-    >
-      {item.sender === "ai" && <Text style={styles.aiIcon}>🤖</Text>}
-      <Text
-        style={[
-          styles.messageText,
-          item.sender === "user"
-            ? styles.userMessageText
-            : styles.aiMessageText,
-        ]}
-      >
-        {item.text}
-      </Text>
-      {item.sender === "user" && <Text style={styles.userIcon}>👨‍🌾</Text>}
-    </View>
-  );
+  const recentUpdates = [
+    {
+      message: "Weather alert: Heavy rain expected tomorrow",
+      time: "2 hours ago",
+    },
+    { message: "Wheat prices increased by 5%", time: "5 hours ago" },
+    { message: "New pest control advisory available", time: "1 day ago" },
+  ];
 
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>🌾 Savior</Text>
-        <Text style={styles.subtitle}>Your Farming Companion</Text>
-      </View>
-
-      <View style={styles.featuresGrid}>
-        <TouchableOpacity
-          style={styles.featureButton}
-          onPress={() => router.push("/(tabs)/weather")}
-        >
-          <Text style={styles.featureIcon}>🌤️</Text>
-          <Text style={styles.featureText}>Weather</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.featureButton}
-          onPress={() => router.push("/(tabs)/market")}
-        >
-          <Text style={styles.featureIcon}>💰</Text>
-          <Text style={styles.featureText}>Market</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.featureButton}
-          onPress={() => router.push("/(tabs)/pest")}
-        >
-          <Text style={styles.featureIcon}>🐛</Text>
-          <Text style={styles.featureText}>Pest Detection</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.featureButton}
-          onPress={() => router.push("/(tabs)/advisory")}
-        >
-          <Text style={styles.featureIcon}>🌾</Text>
-          <Text style={styles.featureText}>Crop Advisory</Text>
-        </TouchableOpacity>
-      </View>
-
-      {/* AI Assistant Button */}
-      <TouchableOpacity
-        style={styles.aiAssistantButton}
-        onPress={() => setShowAIAssistant(true)}
+    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+      {/* Header Section with Background */}
+      <ImageBackground
+        source={{
+          uri: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8ZGVmcz4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0iZ3JhZGllbnQiIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMTAwJSIgeTI9IjEwMCUiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdHlsZT0ic3RvcC1jb2xvcjojNENBRjUwO3N0b3Atb3BhY2l0eToxIiAvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiM4QkMzNEE7c3RvcC1vcGFjaXR5OjEiIC8+CiAgICA8L2xpbmVhckdyYWRpZW50PgogIDwvZGVmcz4KICA8cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2dyYWRpZW50KSIgLz4KPC9zdmc+",
+        }}
+        style={styles.headerBackground}
+        imageStyle={styles.headerImageStyle}
       >
-        <Text style={styles.aiAssistantIcon}>🤖</Text>
-        <Text style={styles.aiAssistantText}>Ask AI Assistant</Text>
-        <Text style={styles.aiAssistantSubtext}>
-          Get instant farming advice
-        </Text>
-      </TouchableOpacity>
+        <View style={styles.headerOverlay}>
+          <Text style={styles.greeting}>Good Morning!</Text>
+          <Text style={styles.userName}>👨‍🌾 Farmer</Text>
+          <Text style={styles.dateText}>
+            Today, {new Date().toDateString()}
+          </Text>
+        </View>
+      </ImageBackground>
 
-      {/* AI Assistant Modal */}
-      <Modal
-        visible={showAIAssistant}
-        animationType="slide"
-        presentationStyle="fullScreen"
-      >
-        <View style={styles.aiModalContainer}>
-          {/* AI Modal Header */}
-          <View style={styles.aiModalHeader}>
-            <View style={styles.aiHeaderLeft}>
-              <Text style={styles.aiModalTitle}>🤖 Savior AI Assistant</Text>
-              <Text style={styles.aiModalSubtitle}>
-                Your Smart Farming Advisor
+      {/* Weather Card */}
+      <View style={styles.weatherCard}>
+        <View style={styles.weatherHeader}>
+          <Text style={styles.weatherTitle}>🌤️ Today's Weather</Text>
+          <TouchableOpacity onPress={() => router.push("/(tabs)/weather")}>
+            <Text style={styles.viewMore}>View Details →</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.weatherContent}>
+          <View style={styles.weatherMain}>
+            <Text style={styles.temperature}>{weatherData.temperature}</Text>
+            <Text style={styles.condition}>{weatherData.condition}</Text>
+          </View>
+          <View style={styles.weatherStats}>
+            <View style={styles.weatherStat}>
+              <Text style={styles.weatherStatLabel}>Humidity</Text>
+              <Text style={styles.weatherStatValue}>
+                {weatherData.humidity}
               </Text>
             </View>
-            <TouchableOpacity
-              style={styles.closeButton}
-              onPress={() => setShowAIAssistant(false)}
-            >
-              <Text style={styles.closeButtonText}>✕</Text>
-            </TouchableOpacity>
-          </View>
-
-          {/* Quick Questions */}
-          <View style={styles.quickQuestionsContainer}>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-              {quickQuestions.map((question, index) => (
-                <TouchableOpacity
-                  key={index}
-                  style={styles.quickQuestionButton}
-                  onPress={() => handleQuickQuestion(question)}
-                >
-                  <Text style={styles.quickQuestionText}>{question}</Text>
-                </TouchableOpacity>
-              ))}
-            </ScrollView>
-          </View>
-
-          {/* Messages */}
-          <FlatList
-            data={messages}
-            renderItem={renderMessage}
-            keyExtractor={(item) => item.id}
-            style={styles.messagesContainer}
-            showsVerticalScrollIndicator={false}
-          />
-
-          {/* AI Loading */}
-          {aiLoading && (
-            <View style={styles.aiLoadingContainer}>
-              <ActivityIndicator color="#4CAF50" />
-              <Text style={styles.aiLoadingText}>AI is thinking... 🤔</Text>
-            </View>
-          )}
-
-          {/* Input Container */}
-          <View style={styles.inputContainer}>
-            <TextInput
-              style={styles.messageInput}
-              value={inputMessage}
-              onChangeText={setInputMessage}
-              placeholder="Ask anything about farming..."
-              placeholderTextColor="#999"
-              multiline
-            />
-            <TouchableOpacity
-              style={styles.voiceButton}
-              onPress={startVoiceInput}
-            >
-              <Text style={styles.voiceButtonText}>
-                {isListening ? "🔴" : "🎤"}
+            <View style={styles.weatherStat}>
+              <Text style={styles.weatherStatLabel}>Rainfall</Text>
+              <Text style={styles.weatherStatValue}>
+                {weatherData.rainfall}
               </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.sendButton}
-              onPress={() => handleAIQuery(inputMessage)}
-              disabled={!inputMessage.trim()}
-            >
-              <Text style={styles.sendButtonText}>📤</Text>
-            </TouchableOpacity>
+            </View>
           </View>
         </View>
-      </Modal>
+      </View>
+
+      {/* Quick Stats Grid */}
+      <View style={styles.statsContainer}>
+        <Text style={styles.sectionTitle}>📊 Quick Overview</Text>
+        <View style={styles.statsGrid}>
+          {quickStats.map((stat, index) => (
+            <TouchableOpacity
+              key={index}
+              style={[styles.statCard, { borderLeftColor: stat.color }]}
+            >
+              <Text style={styles.statIcon}>{stat.icon}</Text>
+              <Text style={styles.statValue}>{stat.value}</Text>
+              <Text style={styles.statLabel}>{stat.label}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      </View>
+
+      {/* Quick Actions */}
+      <View style={styles.actionsContainer}>
+        <Text style={styles.sectionTitle}>🚀 Quick Actions</Text>
+        <View style={styles.actionsGrid}>
+          <TouchableOpacity
+            style={[styles.actionCard, { backgroundColor: "#E8F5E8" }]}
+            onPress={() => router.push("/(tabs)/advisory")}
+          >
+            <Text style={styles.actionIcon}>🌾</Text>
+            <Text style={styles.actionTitle}>Crop Advisory</Text>
+            <Text style={styles.actionSubtitle}>Get expert advice</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[styles.actionCard, { backgroundColor: "#FFF3E0" }]}
+            onPress={() => router.push("/(tabs)/market")}
+          >
+            <Text style={styles.actionIcon}>💰</Text>
+            <Text style={styles.actionTitle}>Market Prices</Text>
+            <Text style={styles.actionSubtitle}>Current rates</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[styles.actionCard, { backgroundColor: "#FFE8E8" }]}
+            onPress={() => router.push("/(tabs)/pest")}
+          >
+            <Text style={styles.actionIcon}>🐛</Text>
+            <Text style={styles.actionTitle}>Pest Detection</Text>
+            <Text style={styles.actionSubtitle}>AI-powered scan</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[styles.actionCard, { backgroundColor: "#E3F2FD" }]}
+            onPress={() => router.push("/(tabs)/community")}
+          >
+            <Text style={styles.actionIcon}>🤝</Text>
+            <Text style={styles.actionTitle}>Community</Text>
+            <Text style={styles.actionSubtitle}>Connect & share</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+
+      {/* Today's Tasks */}
+      <View style={styles.tasksContainer}>
+        <Text style={styles.sectionTitle}>✅ Today's Tasks</Text>
+        {farmingTasks.map((task, index) => (
+          <View key={index} style={styles.taskCard}>
+            <View
+              style={[
+                styles.taskPriority,
+                {
+                  backgroundColor:
+                    task.priority === "high"
+                      ? "#F44336"
+                      : task.priority === "medium"
+                      ? "#FF9800"
+                      : "#4CAF50",
+                },
+              ]}
+            />
+            <View style={styles.taskContent}>
+              <Text style={styles.taskTitle}>{task.task}</Text>
+              <Text style={styles.taskTime}>⏰ {task.time}</Text>
+            </View>
+            <TouchableOpacity style={styles.taskButton}>
+              <Text style={styles.taskButtonText}>✓</Text>
+            </TouchableOpacity>
+          </View>
+        ))}
+      </View>
+
+      {/* Recent Updates */}
+      <View style={styles.updatesContainer}>
+        <Text style={styles.sectionTitle}>📢 Recent Updates</Text>
+        {recentUpdates.map((update, index) => (
+          <View key={index} style={styles.updateCard}>
+            <View style={styles.updateIcon}>
+              <Text style={styles.updateIconText}>📰</Text>
+            </View>
+            <View style={styles.updateContent}>
+              <Text style={styles.updateMessage}>{update.message}</Text>
+              <Text style={styles.updateTime}>{update.time}</Text>
+            </View>
+          </View>
+        ))}
+      </View>
+
+      {/* Farming Tips Card */}
+      <View style={styles.tipsCard}>
+        <Text style={styles.tipsTitle}>💡 Tip of the Day</Text>
+        <Text style={styles.tipsContent}>
+          "Water your plants early morning or late evening to reduce water loss
+          through evaporation and ensure better absorption."
+        </Text>
+        <Text style={styles.tipsAuthor}>- Agricultural Expert</Text>
+      </View>
+
+      {/* Bottom Spacing */}
+      <View style={{ height: 80 }} />
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#f1f8e9" },
-  header: { backgroundColor: "#4CAF50", padding: 20, alignItems: "center" },
-  title: { fontSize: 24, fontWeight: "bold", color: "white" },
-  subtitle: { fontSize: 16, color: "#c8e6c9", marginTop: 5 },
-  featuresGrid: { flexDirection: "row", flexWrap: "wrap", padding: 20 },
-  featureButton: {
-    width: "45%",
-    height: 120,
-    backgroundColor: "white",
-    margin: "2.5%",
-    borderRadius: 12,
+  container: {
+    flex: 1,
+    backgroundColor: "#f8fffe",
+  },
+
+  // Header Styles
+  headerBackground: {
+    height: 200,
     justifyContent: "center",
     alignItems: "center",
-    elevation: 3,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 3.84,
   },
-  featureIcon: { fontSize: 40, marginBottom: 8 },
-  featureText: { fontSize: 16, fontWeight: "bold", color: "#2E7D32" },
-
-  // AI Assistant Button
-  aiAssistantButton: {
-    backgroundColor: "linear-gradient(45deg, #4CAF50, #8BC34A)",
-    backgroundColor: "#4CAF50",
-    marginHorizontal: 20,
-    marginVertical: 10,
-    padding: 20,
-    borderRadius: 15,
+  headerImageStyle: {
+    borderBottomLeftRadius: 30,
+    borderBottomRightRadius: 30,
+  },
+  headerOverlay: {
+    backgroundColor: "rgba(76, 175, 80, 0.8)",
+    width: "100%",
+    height: "100%",
+    justifyContent: "center",
     alignItems: "center",
-    elevation: 5,
+    borderBottomLeftRadius: 30,
+    borderBottomRightRadius: 30,
+  },
+  greeting: {
+    fontSize: 28,
+    fontWeight: "bold",
+    color: "white",
+    marginBottom: 5,
+  },
+  userName: {
+    fontSize: 18,
+    color: "#c8e6c9",
+    marginBottom: 5,
+  },
+  dateText: {
+    fontSize: 14,
+    color: "#c8e6c9",
+  },
+
+  // Weather Card
+  weatherCard: {
+    backgroundColor: "white",
+    margin: 20,
+    marginTop: -50,
+    borderRadius: 20,
+    padding: 20,
+    elevation: 8,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 5,
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
   },
-  aiAssistantIcon: { fontSize: 32, marginBottom: 8 },
-  aiAssistantText: {
-    color: "white",
-    fontSize: 18,
-    fontWeight: "bold",
-    marginBottom: 4,
-  },
-  aiAssistantSubtext: {
-    color: "#c8e6c9",
-    fontSize: 14,
-  },
-
-  // AI Modal Styles
-  aiModalContainer: { flex: 1, backgroundColor: "#f1f8e9" },
-  aiModalHeader: {
-    backgroundColor: "#4CAF50",
-    padding: 20,
+  weatherHeader: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingTop: 50,
+    marginBottom: 15,
   },
-  aiHeaderLeft: { flex: 1 },
-  aiModalTitle: { fontSize: 20, fontWeight: "bold", color: "white" },
-  aiModalSubtitle: { fontSize: 14, color: "#c8e6c9", marginTop: 2 },
-  closeButton: {
-    backgroundColor: "rgba(255,255,255,0.2)",
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    justifyContent: "center",
+  weatherTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#2E7D32",
+  },
+  viewMore: {
+    color: "#4CAF50",
+    fontSize: 14,
+    fontWeight: "600",
+  },
+  weatherContent: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  weatherMain: {
     alignItems: "center",
   },
-  closeButtonText: { fontSize: 18, color: "white", fontWeight: "bold" },
-
-  // Quick Questions
-  quickQuestionsContainer: {
-    backgroundColor: "white",
-    paddingVertical: 15,
-    paddingHorizontal: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: "#E0E0E0",
+  temperature: {
+    fontSize: 36,
+    fontWeight: "bold",
+    color: "#FF9800",
   },
-  quickQuestionButton: {
-    backgroundColor: "#E8F5E8",
-    paddingHorizontal: 15,
-    paddingVertical: 8,
-    borderRadius: 20,
-    marginHorizontal: 5,
-    borderWidth: 1,
-    borderColor: "#4CAF50",
+  condition: {
+    fontSize: 16,
+    color: "#666",
+    marginTop: 5,
   },
-  quickQuestionText: { fontSize: 12, color: "#2E7D32", fontWeight: "500" },
+  weatherStats: {
+    justifyContent: "space-around",
+  },
+  weatherStat: {
+    alignItems: "center",
+  },
+  weatherStatLabel: {
+    fontSize: 12,
+    color: "#666",
+  },
+  weatherStatValue: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#2196F3",
+  },
 
-  // Messages
-  messagesContainer: { flex: 1, paddingHorizontal: 15, paddingVertical: 10 },
-  messageContainer: {
+  // Quick Stats
+  statsContainer: {
+    paddingHorizontal: 20,
+    marginBottom: 20,
+  },
+  sectionTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "#2E7D32",
+    marginBottom: 15,
+  },
+  statsGrid: {
     flexDirection: "row",
-    alignItems: "flex-start",
-    marginVertical: 8,
-    maxWidth: "85%",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
   },
-  userMessage: { alignSelf: "flex-end", flexDirection: "row-reverse" },
-  aiMessage: { alignSelf: "flex-start" },
-  messageText: {
-    padding: 12,
+  statCard: {
+    backgroundColor: "white",
+    width: (width - 50) / 2,
+    padding: 15,
     borderRadius: 15,
-    fontSize: 15,
-    lineHeight: 20,
+    marginBottom: 15,
+    elevation: 4,
+    borderLeftWidth: 5,
+    alignItems: "center",
+  },
+  statIcon: {
+    fontSize: 24,
+    marginBottom: 8,
+  },
+  statValue: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "#2E7D32",
+  },
+  statLabel: {
+    fontSize: 12,
+    color: "#666",
+    textAlign: "center",
+  },
+
+  // Quick Actions
+  actionsContainer: {
+    paddingHorizontal: 20,
+    marginBottom: 20,
+  },
+  actionsGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
+  },
+  actionCard: {
+    width: (width - 50) / 2,
+    padding: 20,
+    borderRadius: 15,
+    marginBottom: 15,
+    alignItems: "center",
+    elevation: 3,
+  },
+  actionIcon: {
+    fontSize: 32,
+    marginBottom: 10,
+  },
+  actionTitle: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#2E7D32",
+    marginBottom: 5,
+  },
+  actionSubtitle: {
+    fontSize: 12,
+    color: "#666",
+    textAlign: "center",
+  },
+
+  // Tasks
+  tasksContainer: {
+    paddingHorizontal: 20,
+    marginBottom: 20,
+  },
+  taskCard: {
+    backgroundColor: "white",
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 15,
+    borderRadius: 12,
+    marginBottom: 10,
+    elevation: 2,
+  },
+  taskPriority: {
+    width: 4,
+    height: "100%",
+    borderRadius: 2,
+    marginRight: 15,
+  },
+  taskContent: {
     flex: 1,
   },
-  userMessageText: {
-    backgroundColor: "#4CAF50",
-    color: "white",
-    marginRight: 8,
-  },
-  aiMessageText: {
-    backgroundColor: "white",
+  taskTitle: {
+    fontSize: 16,
+    fontWeight: "600",
     color: "#333",
-    marginLeft: 8,
-    elevation: 1,
+    marginBottom: 5,
   },
-  aiIcon: { fontSize: 24, marginTop: 8 },
-  userIcon: { fontSize: 24, marginTop: 8 },
-
-  // AI Loading
-  aiLoadingContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    paddingVertical: 10,
-  },
-  aiLoadingText: {
-    marginLeft: 10,
+  taskTime: {
     fontSize: 14,
     color: "#666",
-    fontStyle: "italic",
+  },
+  taskButton: {
+    backgroundColor: "#4CAF50",
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  taskButtonText: {
+    color: "white",
+    fontWeight: "bold",
   },
 
-  // Input
-  inputContainer: {
-    flexDirection: "row",
-    alignItems: "flex-end",
+  // Updates
+  updatesContainer: {
+    paddingHorizontal: 20,
+    marginBottom: 20,
+  },
+  updateCard: {
     backgroundColor: "white",
-    paddingHorizontal: 15,
-    paddingVertical: 10,
-    borderTopWidth: 1,
-    borderTopColor: "#E0E0E0",
+    flexDirection: "row",
+    padding: 15,
+    borderRadius: 12,
+    marginBottom: 10,
+    elevation: 2,
   },
-  messageInput: {
+  updateIcon: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: "#E3F2FD",
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 15,
+  },
+  updateIconText: {
+    fontSize: 18,
+  },
+  updateContent: {
     flex: 1,
-    borderWidth: 1,
-    borderColor: "#E0E0E0",
-    borderRadius: 20,
-    paddingHorizontal: 15,
-    paddingVertical: 10,
-    fontSize: 16,
-    maxHeight: 100,
-    marginRight: 10,
   },
-  voiceButton: {
-    backgroundColor: "#FF5722",
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    justifyContent: "center",
-    alignItems: "center",
-    marginRight: 10,
+  updateMessage: {
+    fontSize: 14,
+    color: "#333",
+    marginBottom: 5,
   },
-  voiceButtonText: { fontSize: 16 },
-  sendButton: {
-    backgroundColor: "#4CAF50",
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    justifyContent: "center",
-    alignItems: "center",
+  updateTime: {
+    fontSize: 12,
+    color: "#666",
   },
-  sendButtonText: { fontSize: 16 },
+
+  // Tips Card
+  tipsCard: {
+    backgroundColor: "#FFF9C4",
+    margin: 20,
+    padding: 20,
+    borderRadius: 15,
+    borderLeftWidth: 5,
+    borderLeftColor: "#FBC02D",
+  },
+  tipsTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#F57F17",
+    marginBottom: 10,
+  },
+  tipsContent: {
+    fontSize: 14,
+    color: "#333",
+    lineHeight: 20,
+    marginBottom: 10,
+    fontStyle: "italic",
+  },
+  tipsAuthor: {
+    fontSize: 12,
+    color: "#666",
+    textAlign: "right",
+  },
 });

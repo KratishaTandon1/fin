@@ -50,7 +50,6 @@ export default function TabLayout() {
           tabBarIcon: () => "🐛",
         }}
       />
-      // app/(tabs)/_layout.js
       <Tabs.Screen
         name="community"
         options={{
