@@ -17,3 +17,17 @@ export default function App() {
     </NavigationContainer>
   );
 }
+{
+  "expo"{
+    "plugins"[
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "This app uses location to show weather for your current area.",
+          "locationAlwaysPermission": "This app uses location to show weather for your current area.",
+          "locationWhenInUsePermission": "This app uses location to show weather for your current area."
+        }
+      ]
+    ]
+  }
+}

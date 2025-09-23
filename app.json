@@ -9,7 +9,11 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "This app uses location to show accurate weather data for your current farming area.",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "This app uses location to provide personalized weather and farming advice for your specific location."
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -19,7 +23,13 @@
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "permissions": [
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_FINE_LOCATION",
+        "INTERNET",
+        "ACCESS_NETWORK_STATE"
+      ]
     },
     "web": {
       "output": "static",
@@ -37,6 +47,16 @@
           "dark": {
             "backgroundColor": "#000000"
           }
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "This app uses location to show accurate weather data and farming advice for your current area.",
+          "locationAlwaysPermission": "This app uses location to provide personalized weather updates for your farm location.",
+          "locationWhenInUsePermission": "This app needs location access to show weather conditions specific to your current farming area.",
+          "isIosBackgroundLocationEnabled": false,
+          "isAndroidBackgroundLocationEnabled": false
         }
       ]
     ],

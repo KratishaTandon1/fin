@@ -1,20 +1,30 @@
+import { useRouter } from "expo-router";
 import React from "react";
 import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  TouchableOpacity,
-  ImageBackground,
-  Image,
+  Alert,
   Dimensions,
+  ImageBackground,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
-import { useRouter } from "expo-router";
+import { useAuth } from "../../src/contexts/AuthContext"; // Import AuthContext
 
 const { width } = Dimensions.get("window");
 
 export default function HomeScreen() {
   const router = useRouter();
+  const { user, signOut } = useAuth(); // Use AuthContext
+
+  // Get current time for greeting
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return "Good Morning";
+    if (hour < 17) return "Good Afternoon";
+    return "Good Evening";
+  };
 
   // Sample data for dashboard
   const weatherData = {
@@ -25,7 +35,7 @@ export default function HomeScreen() {
   };
 
   const quickStats = [
-    { label: "Active Crops", value: "12", icon: "🌾", color: "#4CAF50" },
+    { label: "Active Crops", value: user?.primaryCrops?.length || "0", icon: "🌾", color: "#4CAF50" },
     { label: "Soil Health", value: "Good", icon: "🌱", color: "#FF9800" },
     { label: "Market Price", value: "₹2,450", icon: "💰", color: "#2196F3" },
     { label: "Alerts", value: "3", icon: "⚠️", color: "#F44336" },
@@ -47,6 +57,24 @@ export default function HomeScreen() {
     { message: "New pest control advisory available", time: "1 day ago" },
   ];
 
+  const handleLogout = () => {
+    Alert.alert(
+      "Logout",
+      "Are you sure you want to logout?",
+      [
+        { text: "Cancel", style: "cancel" },
+        { 
+          text: "Logout", 
+          style: "destructive",
+          onPress: async () => {
+            await signOut();
+            router.replace("/login");
+          }
+        }
+      ]
+    );
+  };
+
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       {/* Header Section with Background */}
@@ -58,13 +86,64 @@ export default function HomeScreen() {
         imageStyle={styles.headerImageStyle}
       >
         <View style={styles.headerOverlay}>
-          <Text style={styles.greeting}>Good Morning!</Text>
-          <Text style={styles.userName}>👨‍🌾 Farmer</Text>
-          <Text style={styles.dateText}>
-            Today, {new Date().toDateString()}
-          </Text>
+          <View style={styles.headerContent}>
+            <View style={styles.greetingContainer}>
+              <Text style={styles.greeting}>{getGreeting()}!</Text>
+              <Text style={styles.userName}>
+                👨‍🌾 {user?.name || "Farmer"}
+              </Text>
+              <Text style={styles.dateText}>
+                Today, {new Date().toDateString()}
+              </Text>
+            </View>
+            <TouchableOpacity 
+              style={styles.logoutButton}
+              onPress={handleLogout}
+            >
+              <Text style={styles.logoutButtonText}>🚪</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </ImageBackground>
+
+      {/* User Info Card */}
+      {user && (
+        <View style={styles.userInfoCard}>
+          <View style={styles.userInfoHeader}>
+            <Text style={styles.userInfoTitle}>🏡 Farm Profile</Text>
+          </View>
+          <View style={styles.userInfoContent}>
+            <View style={styles.userInfoRow}>
+              <Text style={styles.userInfoLabel}>📧 Email:</Text>
+              <Text style={styles.userInfoValue}>{user.email}</Text>
+            </View>
+            {user.farmName && (
+              <View style={styles.userInfoRow}>
+                <Text style={styles.userInfoLabel}>🚜 Farm:</Text>
+                <Text style={styles.userInfoValue}>{user.farmName}</Text>
+              </View>
+            )}
+            {user.farmSize && (
+              <View style={styles.userInfoRow}>
+                <Text style={styles.userInfoLabel}>📏 Size:</Text>
+                <Text style={styles.userInfoValue}>{user.farmSize}</Text>
+              </View>
+            )}
+            {user.location && (
+              <View style={styles.userInfoRow}>
+                <Text style={styles.userInfoLabel}>📍 Location:</Text>
+                <Text style={styles.userInfoValue}>{user.location}</Text>
+              </View>
+            )}
+            {user.soilType && (
+              <View style={styles.userInfoRow}>
+                <Text style={styles.userInfoLabel}>🌱 Soil:</Text>
+                <Text style={styles.userInfoValue}>{user.soilType}</Text>
+              </View>
+            )}
+          </View>
+        </View>
+      )}
 
       {/* Weather Card */}
       <View style={styles.weatherCard}>
@@ -112,6 +191,25 @@ export default function HomeScreen() {
           ))}
         </View>
       </View>
+
+      {/* User's Primary Crops */}
+      {user?.primaryCrops && user.primaryCrops.length > 0 && (
+        <View style={styles.cropsContainer}>
+          <Text style={styles.sectionTitle}>🌾 Your Primary Crops</Text>
+          <View style={styles.cropsGrid}>
+            {user.primaryCrops.slice(0, 6).map((crop, index) => (
+              <View key={index} style={styles.cropChip}>
+                <Text style={styles.cropText}>{crop}</Text>
+              </View>
+            ))}
+            {user.primaryCrops.length > 6 && (
+              <View style={styles.cropChip}>
+                <Text style={styles.cropText}>+{user.primaryCrops.length - 6} more</Text>
+              </View>
+            )}
+          </View>
+        </View>
+      )}
 
       {/* Quick Actions */}
       <View style={styles.actionsContainer}>
@@ -200,14 +298,24 @@ export default function HomeScreen() {
         ))}
       </View>
 
-      {/* Farming Tips Card */}
+      {/* Personalized Farming Tips */}
       <View style={styles.tipsCard}>
-        <Text style={styles.tipsTitle}>💡 Tip of the Day</Text>
+        <Text style={styles.tipsTitle}>💡 Personalized Tip</Text>
         <Text style={styles.tipsContent}>
-          "Water your plants early morning or late evening to reduce water loss
-          through evaporation and ensure better absorption."
+          {user?.soilType 
+            ? `For ${user.soilType}, ensure proper drainage and consider organic matter to improve soil structure and nutrient content.`
+            : "Water your plants early morning or late evening to reduce water loss through evaporation and ensure better absorption."
+          }
         </Text>
         <Text style={styles.tipsAuthor}>- Agricultural Expert</Text>
+      </View>
+
+      {/* App Info Card */}
+      <View style={styles.infoCard}>
+        <Text style={styles.infoTitle}>📱 Local Storage</Text>
+        <Text style={styles.infoText}>
+          All your data is stored securely on your device. No internet required for basic functionality.
+        </Text>
       </View>
 
       {/* Bottom Spacing */}
@@ -241,6 +349,16 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 30,
     borderBottomRightRadius: 30,
   },
+  headerContent: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    width: "100%",
+    paddingHorizontal: 20,
+  },
+  greetingContainer: {
+    flex: 1,
+  },
   greeting: {
     fontSize: 28,
     fontWeight: "bold",
@@ -256,12 +374,65 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#c8e6c9",
   },
+  logoutButton: {
+    backgroundColor: "rgba(255, 255, 255, 0.2)",
+    padding: 12,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: "rgba(255, 255, 255, 0.3)",
+  },
+  logoutButtonText: {
+    fontSize: 20,
+  },
+
+  // User Info Card
+  userInfoCard: {
+    backgroundColor: "white",
+    margin: 20,
+    marginTop: -50,
+    borderRadius: 20,
+    padding: 20,
+    elevation: 8,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+    marginBottom: 10,
+  },
+  userInfoHeader: {
+    marginBottom: 15,
+  },
+  userInfoTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#2E7D32",
+  },
+  userInfoContent: {
+    gap: 8,
+  },
+  userInfoRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  userInfoLabel: {
+    fontSize: 14,
+    color: "#666",
+    flex: 1,
+  },
+  userInfoValue: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#333",
+    flex: 2,
+    textAlign: "right",
+  },
 
   // Weather Card
   weatherCard: {
     backgroundColor: "white",
     margin: 20,
-    marginTop: -50,
+    marginTop: 10,
     borderRadius: 20,
     padding: 20,
     elevation: 8,
@@ -358,6 +529,30 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: "#666",
     textAlign: "center",
+  },
+
+  // Crops Container
+  cropsContainer: {
+    paddingHorizontal: 20,
+    marginBottom: 20,
+  },
+  cropsGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 10,
+  },
+  cropChip: {
+    backgroundColor: "#E8F5E8",
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: "#4CAF50",
+  },
+  cropText: {
+    fontSize: 12,
+    color: "#2E7D32",
+    fontWeight: "600",
   },
 
   // Quick Actions
@@ -504,5 +699,26 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: "#666",
     textAlign: "right",
+  },
+
+  // Info Card
+  infoCard: {
+    backgroundColor: "#E3F2FD",
+    margin: 20,
+    padding: 15,
+    borderRadius: 15,
+    borderLeftWidth: 5,
+    borderLeftColor: "#2196F3",
+  },
+  infoTitle: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#1976D2",
+    marginBottom: 8,
+  },
+  infoText: {
+    fontSize: 14,
+    color: "#1976D2",
+    lineHeight: 20,
   },
 });
