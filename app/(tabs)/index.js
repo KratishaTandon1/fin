@@ -96,12 +96,12 @@ export default function HomeScreen() {
                 Today, {new Date().toDateString()}
               </Text>
             </View>
-            <TouchableOpacity 
+            {/* <TouchableOpacity 
               style={styles.logoutButton}
               onPress={handleLogout}
             >
-              <Text style={styles.logoutButtonText}>🚪</Text>
-            </TouchableOpacity>
+              {/* <Text style={styles.logoutButtonText}>🚪</Text> */}
+            {/* </TouchableOpacity> */} */}
           </View>
         </View>
       </ImageBackground>

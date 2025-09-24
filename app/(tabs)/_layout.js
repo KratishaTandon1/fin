@@ -3,7 +3,7 @@ import { useState } from "react";
 import { ActivityIndicator, Alert, Modal, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { useAuth } from "../../src/contexts/AuthContext";
 
-// Hamburger Menu Component
+// SIMPLE Hamburger Menu Component - THIS WILL WORK!
 function HamburgerMenu() {
   const { user, signOut } = useAuth();
   const router = useRouter();
@@ -28,35 +28,11 @@ function HamburgerMenu() {
           shadowRadius: 5,
         }}
         onPress={() => setMenuVisible(true)}
-        activeOpacity={0.8}
       >
-        <View style={{
-          width: 20,
-          height: 20,
-          justifyContent: 'space-between',
-        }}>
-          <View style={{
-            width: 20,
-            height: 2.5,
-            backgroundColor: 'white',
-            borderRadius: 1.25,
-          }} />
-          <View style={{
-            width: 20,
-            height: 2.5,
-            backgroundColor: 'white',
-            borderRadius: 1.25,
-          }} />
-          <View style={{
-            width: 20,
-            height: 2.5,
-            backgroundColor: 'white',
-            borderRadius: 1.25,
-          }} />
-        </View>
+        <Text style={{ color: 'white', fontSize: 18 }}>☰</Text>
       </TouchableOpacity>
 
-      {/* Menu Modal */}
+      {/* Simple Menu Modal */}
       <Modal
         visible={menuVisible}
         transparent={true}
@@ -72,10 +48,8 @@ function HamburgerMenu() {
             backgroundColor: 'white',
             borderTopLeftRadius: 25,
             borderTopRightRadius: 25,
-            paddingTop: 20,
-            paddingBottom: 30,
-            paddingHorizontal: 20,
-            maxHeight: '90%',
+            padding: 20,
+            maxHeight: '85%',
           }}>
             
             {/* Header */}
@@ -84,9 +58,9 @@ function HamburgerMenu() {
               justifyContent: 'space-between',
               alignItems: 'center',
               marginBottom: 20,
+              paddingBottom: 15,
               borderBottomWidth: 1,
               borderBottomColor: '#E0E0E0',
-              paddingBottom: 15,
             }}>
               <View>
                 <Text style={{
@@ -116,40 +90,28 @@ function HamburgerMenu() {
               </TouchableOpacity>
             </View>
 
-            {/* Menu Items - Working Version */}
-            <ScrollView 
-              style={{ flex: 1, paddingTop: 10 }} 
-              showsVerticalScrollIndicator={false}
-              contentContainerStyle={{ paddingBottom: 20 }}
-            >
-              {/* MAIN NAVIGATION SECTION */}
-              <View style={{
-                marginVertical: 10,
-                paddingHorizontal: 15,
+            {/* SIMPLE MENU ITEMS - SHOULD DEFINITELY WORK */}
+            <ScrollView showsVerticalScrollIndicator={false}>
+              
+              {/* MAIN NAVIGATION */}
+              <Text style={{
+                fontSize: 16,
+                fontWeight: 'bold',
+                color: '#4CAF50',
+                marginBottom: 15,
+                marginTop: 10,
               }}>
-                <Text style={{
-                  fontSize: 14,
-                  fontWeight: 'bold',
-                  color: '#4CAF50',
-                  marginBottom: 8,
-                }}>
-                  Main Navigation
-                </Text>
-                <View style={{
-                  height: 1,
-                  backgroundColor: '#E0E0E0',
-                }} />
-              </View>
+                📱 Main Navigation
+              </Text>
 
               {/* Dashboard */}
-              <TouchableOpacity
+              <TouchableOpacity 
                 style={{
                   flexDirection: 'row',
                   alignItems: 'center',
-                  paddingVertical: 12,
-                  paddingHorizontal: 15,
-                  marginBottom: 6,
-                  backgroundColor: '#F8F9FA',
+                  padding: 15,
+                  backgroundColor: '#f8f9fa',
+                  marginBottom: 10,
                   borderRadius: 12,
                   borderLeftWidth: 4,
                   borderLeftColor: '#4CAF50',
@@ -158,53 +120,22 @@ function HamburgerMenu() {
                   setMenuVisible(false);
                   router.push('/(tabs)/');
                 }}
-                activeOpacity={0.7}
               >
-                <View style={{
-                  width: 40,
-                  height: 40,
-                  borderRadius: 20,
-                  backgroundColor: 'white',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  marginRight: 12,
-                  elevation: 2,
-                }}>
-                  <Text style={{ fontSize: 18 }}>🏠</Text>
+                <Text style={{ fontSize: 20, marginRight: 15 }}>🏠</Text>
+                <View>
+                  <Text style={{ fontSize: 16, fontWeight: 'bold', color: '#333' }}>Dashboard</Text>
+                  <Text style={{ fontSize: 12, color: '#666' }}>Home & overview</Text>
                 </View>
-                <View style={{ flex: 1 }}>
-                  <Text style={{
-                    fontSize: 15,
-                    fontWeight: 'bold',
-                    color: '#333',
-                    marginBottom: 2,
-                  }}>
-                    Dashboard
-                  </Text>
-                  <Text style={{
-                    fontSize: 11,
-                    color: '#666',
-                  }}>
-                    Home & overview
-                  </Text>
-                </View>
-                <Text style={{
-                  fontSize: 16,
-                  color: '#CCC',
-                }}>
-                  ›
-                </Text>
               </TouchableOpacity>
 
               {/* Crop Selection */}
-              <TouchableOpacity
+              <TouchableOpacity 
                 style={{
                   flexDirection: 'row',
                   alignItems: 'center',
-                  paddingVertical: 12,
-                  paddingHorizontal: 15,
-                  marginBottom: 6,
-                  backgroundColor: '#F8F9FA',
+                  padding: 15,
+                  backgroundColor: '#f8f9fa',
+                  marginBottom: 10,
                   borderRadius: 12,
                   borderLeftWidth: 4,
                   borderLeftColor: '#4CAF50',
@@ -213,53 +144,22 @@ function HamburgerMenu() {
                   setMenuVisible(false);
                   router.push('/(tabs)/crop-selection');
                 }}
-                activeOpacity={0.7}
               >
-                <View style={{
-                  width: 40,
-                  height: 40,
-                  borderRadius: 20,
-                  backgroundColor: 'white',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  marginRight: 12,
-                  elevation: 2,
-                }}>
-                  <Text style={{ fontSize: 18 }}>🌾</Text>
+                <Text style={{ fontSize: 20, marginRight: 15 }}>🌾</Text>
+                <View>
+                  <Text style={{ fontSize: 16, fontWeight: 'bold', color: '#333' }}>Crop Selection</Text>
+                  <Text style={{ fontSize: 12, color: '#666' }}>Choose your crops</Text>
                 </View>
-                <View style={{ flex: 1 }}>
-                  <Text style={{
-                    fontSize: 15,
-                    fontWeight: 'bold',
-                    color: '#333',
-                    marginBottom: 2,
-                  }}>
-                    Crop Selection
-                  </Text>
-                  <Text style={{
-                    fontSize: 11,
-                    color: '#666',
-                  }}>
-                    Choose your crops
-                  </Text>
-                </View>
-                <Text style={{
-                  fontSize: 16,
-                  color: '#CCC',
-                }}>
-                  ›
-                </Text>
               </TouchableOpacity>
 
-              { Crop Detection }
-              <TouchableOpacity
+              {/* Crop Detection */}
+              <TouchableOpacity 
                 style={{
                   flexDirection: 'row',
                   alignItems: 'center',
-                  paddingVertical: 12,
-                  paddingHorizontal: 15,
-                  marginBottom: 6,
-                  backgroundColor: '#F8F9FA',
+                  padding: 15,
+                  backgroundColor: '#f8f9fa',
+                  marginBottom: 10,
                   borderRadius: 12,
                   borderLeftWidth: 4,
                   borderLeftColor: '#4CAF50',
@@ -268,53 +168,22 @@ function HamburgerMenu() {
                   setMenuVisible(false);
                   router.push('/(tabs)/crop-detection');
                 }}
-                activeOpacity={0.7}
               >
-                <View style={{
-                  width: 40,
-                  height: 40,
-                  borderRadius: 20,
-                  backgroundColor: 'white',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  marginRight: 12,
-                  elevation: 2,
-                }}>
-                  <Text style={{ fontSize: 18 }}>📷</Text>
+                <Text style={{ fontSize: 20, marginRight: 15 }}>📷</Text>
+                <View>
+                  <Text style={{ fontSize: 16, fontWeight: 'bold', color: '#333' }}>Crop Detection</Text>
+                  <Text style={{ fontSize: 12, color: '#666' }}>AI-powered identification</Text>
                 </View>
-                <View style={{ flex: 1 }}>
-                  <Text style={{
-                    fontSize: 15,
-                    fontWeight: 'bold',
-                    color: '#333',
-                    marginBottom: 2,
-                  }}>
-                    Crop Detection
-                  </Text>
-                  <Text style={{
-                    fontSize: 11,
-                    color: '#666',
-                  }}>
-                    AI-powered identification
-                  </Text>
-                </View>
-                <Text style={{
-                  fontSize: 16,
-                  color: '#CCC',
-                }}>
-                  ›
-                </Text>
               </TouchableOpacity>
 
               {/* Pest Detection */}
-              <TouchableOpacity
+              <TouchableOpacity 
                 style={{
                   flexDirection: 'row',
                   alignItems: 'center',
-                  paddingVertical: 12,
-                  paddingHorizontal: 15,
-                  marginBottom: 6,
-                  backgroundColor: '#F8F9FA',
+                  padding: 15,
+                  backgroundColor: '#f8f9fa',
+                  marginBottom: 10,
                   borderRadius: 12,
                   borderLeftWidth: 4,
                   borderLeftColor: '#4CAF50',
@@ -323,53 +192,22 @@ function HamburgerMenu() {
                   setMenuVisible(false);
                   router.push('/(tabs)/pest');
                 }}
-                activeOpacity={0.7}
               >
-                <View style={{
-                  width: 40,
-                  height: 40,
-                  borderRadius: 20,
-                  backgroundColor: 'white',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  marginRight: 12,
-                  elevation: 2,
-                }}>
-                  <Text style={{ fontSize: 18 }}>🐛</Text>
+                <Text style={{ fontSize: 20, marginRight: 15 }}>🐛</Text>
+                <View>
+                  <Text style={{ fontSize: 16, fontWeight: 'bold', color: '#333' }}>Pest Detection</Text>
+                  <Text style={{ fontSize: 12, color: '#666' }}>Identify & manage pests</Text>
                 </View>
-                <View style={{ flex: 1 }}>
-                  <Text style={{
-                    fontSize: 15,
-                    fontWeight: 'bold',
-                    color: '#333',
-                    marginBottom: 2,
-                  }}>
-                    Pest Detection
-                  </Text>
-                  <Text style={{
-                    fontSize: 11,
-                    color: '#666',
-                  }}>
-                    Identify & manage pests
-                  </Text>
-                </View>
-                <Text style={{
-                  fontSize: 16,
-                  color: '#CCC',
-                }}>
-                  ›
-                </Text>
               </TouchableOpacity>
 
               {/* Weather */}
-              <TouchableOpacity
+              <TouchableOpacity 
                 style={{
                   flexDirection: 'row',
                   alignItems: 'center',
-                  paddingVertical: 12,
-                  paddingHorizontal: 15,
-                  marginBottom: 6,
-                  backgroundColor: '#F8F9FA',
+                  padding: 15,
+                  backgroundColor: '#f8f9fa',
+                  marginBottom: 10,
                   borderRadius: 12,
                   borderLeftWidth: 4,
                   borderLeftColor: '#4CAF50',
@@ -378,53 +216,22 @@ function HamburgerMenu() {
                   setMenuVisible(false);
                   router.push('/(tabs)/weather');
                 }}
-                activeOpacity={0.7}
               >
-                <View style={{
-                  width: 40,
-                  height: 40,
-                  borderRadius: 20,
-                  backgroundColor: 'white',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  marginRight: 12,
-                  elevation: 2,
-                }}>
-                  <Text style={{ fontSize: 18 }}>🌤️</Text>
+                <Text style={{ fontSize: 20, marginRight: 15 }}>🌤️</Text>
+                <View>
+                  <Text style={{ fontSize: 16, fontWeight: 'bold', color: '#333' }}>Weather Forecast</Text>
+                  <Text style={{ fontSize: 12, color: '#666' }}>Current & upcoming weather</Text>
                 </View>
-                <View style={{ flex: 1 }}>
-                  <Text style={{
-                    fontSize: 15,
-                    fontWeight: 'bold',
-                    color: '#333',
-                    marginBottom: 2,
-                  }}>
-                    Weather Forecast
-                  </Text>
-                  <Text style={{
-                    fontSize: 11,
-                    color: '#666',
-                  }}>
-                    Current & upcoming weather
-                  </Text>
-                </View>
-                <Text style={{
-                  fontSize: 16,
-                  color: '#CCC',
-                }}>
-                  ›
-                </Text>
               </TouchableOpacity>
 
               {/* Market */}
-              <TouchableOpacity
+              <TouchableOpacity 
                 style={{
                   flexDirection: 'row',
                   alignItems: 'center',
-                  paddingVertical: 12,
-                  paddingHorizontal: 15,
-                  marginBottom: 6,
-                  backgroundColor: '#F8F9FA',
+                  padding: 15,
+                  backgroundColor: '#f8f9fa',
+                  marginBottom: 10,
                   borderRadius: 12,
                   borderLeftWidth: 4,
                   borderLeftColor: '#4CAF50',
@@ -433,53 +240,22 @@ function HamburgerMenu() {
                   setMenuVisible(false);
                   router.push('/(tabs)/market');
                 }}
-                activeOpacity={0.7}
               >
-                <View style={{
-                  width: 40,
-                  height: 40,
-                  borderRadius: 20,
-                  backgroundColor: 'white',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  marginRight: 12,
-                  elevation: 2,
-                }}>
-                  <Text style={{ fontSize: 18 }}>💰</Text>
+                <Text style={{ fontSize: 20, marginRight: 15 }}>💰</Text>
+                <View>
+                  <Text style={{ fontSize: 16, fontWeight: 'bold', color: '#333' }}>Market Prices</Text>
+                  <Text style={{ fontSize: 12, color: '#666' }}>Current crop rates</Text>
                 </View>
-                <View style={{ flex: 1 }}>
-                  <Text style={{
-                    fontSize: 15,
-                    fontWeight: 'bold',
-                    color: '#333',
-                    marginBottom: 2,
-                  }}>
-                    Market Prices
-                  </Text>
-                  <Text style={{
-                    fontSize: 11,
-                    color: '#666',
-                  }}>
-                    Current crop rates
-                  </Text>
-                </View>
-                <Text style={{
-                  fontSize: 16,
-                  color: '#CCC',
-                }}>
-                  ›
-                </Text>
               </TouchableOpacity>
 
               {/* Community */}
-              <TouchableOpacity
+              <TouchableOpacity 
                 style={{
                   flexDirection: 'row',
                   alignItems: 'center',
-                  paddingVertical: 12,
-                  paddingHorizontal: 15,
-                  marginBottom: 6,
-                  backgroundColor: '#F8F9FA',
+                  padding: 15,
+                  backgroundColor: '#f8f9fa',
+                  marginBottom: 10,
                   borderRadius: 12,
                   borderLeftWidth: 4,
                   borderLeftColor: '#4CAF50',
@@ -488,53 +264,22 @@ function HamburgerMenu() {
                   setMenuVisible(false);
                   router.push('/(tabs)/community');
                 }}
-                activeOpacity={0.7}
               >
-                <View style={{
-                  width: 40,
-                  height: 40,
-                  borderRadius: 20,
-                  backgroundColor: 'white',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  marginRight: 12,
-                  elevation: 2,
-                }}>
-                  <Text style={{ fontSize: 18 }}>🤝</Text>
+                <Text style={{ fontSize: 20, marginRight: 15 }}>🤝</Text>
+                <View>
+                  <Text style={{ fontSize: 16, fontWeight: 'bold', color: '#333' }}>Community</Text>
+                  <Text style={{ fontSize: 12, color: '#666' }}>Connect with farmers</Text>
                 </View>
-                <View style={{ flex: 1 }}>
-                  <Text style={{
-                    fontSize: 15,
-                    fontWeight: 'bold',
-                    color: '#333',
-                    marginBottom: 2,
-                  }}>
-                    Community
-                  </Text>
-                  <Text style={{
-                    fontSize: 11,
-                    color: '#666',
-                  }}>
-                    Connect with farmers
-                  </Text>
-                </View>
-                <Text style={{
-                  fontSize: 16,
-                  color: '#CCC',
-                }}>
-                  ›
-                </Text>
               </TouchableOpacity>
 
               {/* Crop Advisory */}
-              <TouchableOpacity
+              <TouchableOpacity 
                 style={{
                   flexDirection: 'row',
                   alignItems: 'center',
-                  paddingVertical: 12,
-                  paddingHorizontal: 15,
-                  marginBottom: 6,
-                  backgroundColor: '#F8F9FA',
+                  padding: 15,
+                  backgroundColor: '#f8f9fa',
+                  marginBottom: 10,
                   borderRadius: 12,
                   borderLeftWidth: 4,
                   borderLeftColor: '#4CAF50',
@@ -543,53 +288,22 @@ function HamburgerMenu() {
                   setMenuVisible(false);
                   router.push('/(tabs)/crop-advisory');
                 }}
-                activeOpacity={0.7}
               >
-                <View style={{
-                  width: 40,
-                  height: 40,
-                  borderRadius: 20,
-                  backgroundColor: 'white',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  marginRight: 12,
-                  elevation: 2,
-                }}>
-                  <Text style={{ fontSize: 18 }}>📋</Text>
+                <Text style={{ fontSize: 20, marginRight: 15 }}>📋</Text>
+                <View>
+                  <Text style={{ fontSize: 16, fontWeight: 'bold', color: '#333' }}>Crop Advisory</Text>
+                  <Text style={{ fontSize: 12, color: '#666' }}>Expert farming advice</Text>
                 </View>
-                <View style={{ flex: 1 }}>
-                  <Text style={{
-                    fontSize: 15,
-                    fontWeight: 'bold',
-                    color: '#333',
-                    marginBottom: 2,
-                  }}>
-                    Crop Advisory
-                  </Text>
-                  <Text style={{
-                    fontSize: 11,
-                    color: '#666',
-                  }}>
-                    Expert farming advice
-                  </Text>
-                </View>
-                <Text style={{
-                  fontSize: 16,
-                  color: '#CCC',
-                }}>
-                  ›
-                </Text>
               </TouchableOpacity>
 
               {/* Voice Assistant */}
-              <TouchableOpacity
+              <TouchableOpacity 
                 style={{
                   flexDirection: 'row',
                   alignItems: 'center',
-                  paddingVertical: 12,
-                  paddingHorizontal: 15,
-                  marginBottom: 6,
-                  backgroundColor: '#F8F9FA',
+                  padding: 15,
+                  backgroundColor: '#f8f9fa',
+                  marginBottom: 20,
                   borderRadius: 12,
                   borderLeftWidth: 4,
                   borderLeftColor: '#4CAF50',
@@ -598,72 +312,33 @@ function HamburgerMenu() {
                   setMenuVisible(false);
                   router.push('/(tabs)/voice-assistant');
                 }}
-                activeOpacity={0.7}
               >
-                <View style={{
-                  width: 40,
-                  height: 40,
-                  borderRadius: 20,
-                  backgroundColor: 'white',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  marginRight: 12,
-                  elevation: 2,
-                }}>
-                  <Text style={{ fontSize: 18 }}>🎤</Text>
+                <Text style={{ fontSize: 20, marginRight: 15 }}>🎤</Text>
+                <View>
+                  <Text style={{ fontSize: 16, fontWeight: 'bold', color: '#333' }}>Voice Assistant</Text>
+                  <Text style={{ fontSize: 12, color: '#666' }}>Voice-powered help</Text>
                 </View>
-                <View style={{ flex: 1 }}>
-                  <Text style={{
-                    fontSize: 15,
-                    fontWeight: 'bold',
-                    color: '#333',
-                    marginBottom: 2,
-                  }}>
-                    Voice Assistant
-                  </Text>
-                  <Text style={{
-                    fontSize: 11,
-                    color: '#666',
-                  }}>
-                    Voice-powered help
-                  </Text>
-                </View>
-                <Text style={{
-                  fontSize: 16,
-                  color: '#CCC',
-                }}>
-                  ›
-                </Text>
               </TouchableOpacity>
 
-              {/* ACCOUNT & SETTINGS SECTION */}
-              <View style={{
-                marginVertical: 15,
-                paddingHorizontal: 15,
+              {/* SETTINGS SECTION */}
+              <Text style={{
+                fontSize: 16,
+                fontWeight: 'bold',
+                color: '#4CAF50',
+                marginBottom: 15,
+                marginTop: 10,
               }}>
-                <Text style={{
-                  fontSize: 14,
-                  fontWeight: 'bold',
-                  color: '#4CAF50',
-                  marginBottom: 8,
-                }}>
-                  Account & Settings
-                </Text>
-                <View style={{
-                  height: 1,
-                  backgroundColor: '#E0E0E0',
-                }} />
-              </View>
+                ⚙️ Settings & Support
+              </Text>
 
               {/* Profile */}
-              <TouchableOpacity
+              <TouchableOpacity 
                 style={{
                   flexDirection: 'row',
                   alignItems: 'center',
-                  paddingVertical: 12,
-                  paddingHorizontal: 15,
-                  marginBottom: 6,
-                  backgroundColor: '#F8F9FA',
+                  padding: 15,
+                  backgroundColor: '#f8f9fa',
+                  marginBottom: 10,
                   borderRadius: 12,
                   borderLeftWidth: 4,
                   borderLeftColor: '#4CAF50',
@@ -676,53 +351,22 @@ function HamburgerMenu() {
                     [{ text: "OK" }]
                   );
                 }}
-                activeOpacity={0.7}
               >
-                <View style={{
-                  width: 40,
-                  height: 40,
-                  borderRadius: 20,
-                  backgroundColor: 'white',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  marginRight: 12,
-                  elevation: 2,
-                }}>
-                  <Text style={{ fontSize: 18 }}>👤</Text>
+                <Text style={{ fontSize: 20, marginRight: 15 }}>👤</Text>
+                <View>
+                  <Text style={{ fontSize: 16, fontWeight: 'bold', color: '#333' }}>Profile</Text>
+                  <Text style={{ fontSize: 12, color: '#666' }}>Your account details</Text>
                 </View>
-                <View style={{ flex: 1 }}>
-                  <Text style={{
-                    fontSize: 15,
-                    fontWeight: 'bold',
-                    color: '#333',
-                    marginBottom: 2,
-                  }}>
-                    Profile
-                  </Text>
-                  <Text style={{
-                    fontSize: 11,
-                    color: '#666',
-                  }}>
-                    Your account details
-                  </Text>
-                </View>
-                <Text style={{
-                  fontSize: 16,
-                  color: '#CCC',
-                }}>
-                  ›
-                </Text>
               </TouchableOpacity>
 
               {/* Settings */}
-              <TouchableOpacity
+              <TouchableOpacity 
                 style={{
                   flexDirection: 'row',
                   alignItems: 'center',
-                  paddingVertical: 12,
-                  paddingHorizontal: 15,
-                  marginBottom: 6,
-                  backgroundColor: '#F8F9FA',
+                  padding: 15,
+                  backgroundColor: '#f8f9fa',
+                  marginBottom: 10,
                   borderRadius: 12,
                   borderLeftWidth: 4,
                   borderLeftColor: '#4CAF50',
@@ -740,53 +384,22 @@ function HamburgerMenu() {
                     ]
                   );
                 }}
-                activeOpacity={0.7}
               >
-                <View style={{
-                  width: 40,
-                  height: 40,
-                  borderRadius: 20,
-                  backgroundColor: 'white',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  marginRight: 12,
-                  elevation: 2,
-                }}>
-                  <Text style={{ fontSize: 18 }}>⚙️</Text>
+                <Text style={{ fontSize: 20, marginRight: 15 }}>⚙️</Text>
+                <View>
+                  <Text style={{ fontSize: 16, fontWeight: 'bold', color: '#333' }}>Settings</Text>
+                  <Text style={{ fontSize: 12, color: '#666' }}>App preferences</Text>
                 </View>
-                <View style={{ flex: 1 }}>
-                  <Text style={{
-                    fontSize: 15,
-                    fontWeight: 'bold',
-                    color: '#333',
-                    marginBottom: 2,
-                  }}>
-                    Settings
-                  </Text>
-                  <Text style={{
-                    fontSize: 11,
-                    color: '#666',
-                  }}>
-                    App preferences
-                  </Text>
-                </View>
-                <Text style={{
-                  fontSize: 16,
-                  color: '#CCC',
-                }}>
-                  ›
-                </Text>
               </TouchableOpacity>
 
               {/* Support */}
-              <TouchableOpacity
+              <TouchableOpacity 
                 style={{
                   flexDirection: 'row',
                   alignItems: 'center',
-                  paddingVertical: 12,
-                  paddingHorizontal: 15,
-                  marginBottom: 6,
-                  backgroundColor: '#F8F9FA',
+                  padding: 15,
+                  backgroundColor: '#f8f9fa',
+                  marginBottom: 10,
                   borderRadius: 12,
                   borderLeftWidth: 4,
                   borderLeftColor: '#4CAF50',
@@ -804,53 +417,22 @@ function HamburgerMenu() {
                     ]
                   );
                 }}
-                activeOpacity={0.7}
               >
-                <View style={{
-                  width: 40,
-                  height: 40,
-                  borderRadius: 20,
-                  backgroundColor: 'white',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  marginRight: 12,
-                  elevation: 2,
-                }}>
-                  <Text style={{ fontSize: 18 }}>📞</Text>
+                <Text style={{ fontSize: 20, marginRight: 15 }}>📞</Text>
+                <View>
+                  <Text style={{ fontSize: 16, fontWeight: 'bold', color: '#333' }}>Support</Text>
+                  <Text style={{ fontSize: 12, color: '#666' }}>Get help & contact</Text>
                 </View>
-                <View style={{ flex: 1 }}>
-                  <Text style={{
-                    fontSize: 15,
-                    fontWeight: 'bold',
-                    color: '#333',
-                    marginBottom: 2,
-                  }}>
-                    Support
-                  </Text>
-                  <Text style={{
-                    fontSize: 11,
-                    color: '#666',
-                  }}>
-                    Get help & contact
-                  </Text>
-                </View>
-                <Text style={{
-                  fontSize: 16,
-                  color: '#CCC',
-                }}>
-                  ›
-                </Text>
               </TouchableOpacity>
 
               {/* About */}
-              <TouchableOpacity
+              <TouchableOpacity 
                 style={{
                   flexDirection: 'row',
                   alignItems: 'center',
-                  paddingVertical: 12,
-                  paddingHorizontal: 15,
-                  marginBottom: 6,
-                  backgroundColor: '#F8F9FA',
+                  padding: 15,
+                  backgroundColor: '#f8f9fa',
+                  marginBottom: 20,
                   borderRadius: 12,
                   borderLeftWidth: 4,
                   borderLeftColor: '#4CAF50',
@@ -863,72 +445,33 @@ function HamburgerMenu() {
                     [{ text: "OK" }]
                   );
                 }}
-                activeOpacity={0.7}
               >
-                <View style={{
-                  width: 40,
-                  height: 40,
-                  borderRadius: 20,
-                  backgroundColor: 'white',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  marginRight: 12,
-                  elevation: 2,
-                }}>
-                  <Text style={{ fontSize: 18 }}>ℹ️</Text>
+                <Text style={{ fontSize: 20, marginRight: 15 }}>ℹ️</Text>
+                <View>
+                  <Text style={{ fontSize: 16, fontWeight: 'bold', color: '#333' }}>About Kissan Setu</Text>
+                  <Text style={{ fontSize: 12, color: '#666' }}>Version & info</Text>
                 </View>
-                <View style={{ flex: 1 }}>
-                  <Text style={{
-                    fontSize: 15,
-                    fontWeight: 'bold',
-                    color: '#333',
-                    marginBottom: 2,
-                  }}>
-                    About Kissan Setu
-                  </Text>
-                  <Text style={{
-                    fontSize: 11,
-                    color: '#666',
-                  }}>
-                    Version & info
-                  </Text>
-                </View>
-                <Text style={{
-                  fontSize: 16,
-                  color: '#CCC',
-                }}>
-                  ›
-                </Text>
               </TouchableOpacity>
 
               {/* LOGOUT SECTION */}
-              <View style={{
-                marginVertical: 15,
-                paddingHorizontal: 15,
+              <Text style={{
+                fontSize: 16,
+                fontWeight: 'bold',
+                color: '#F44336',
+                marginBottom: 15,
+                marginTop: 10,
               }}>
-                <Text style={{
-                  fontSize: 14,
-                  fontWeight: 'bold',
-                  color: '#4CAF50',
-                  marginBottom: 8,
-                }}>
-                  Account
-                </Text>
-                <View style={{
-                  height: 1,
-                  backgroundColor: '#E0E0E0',
-                }} />
-              </View>
+                🚪 Account
+              </Text>
 
               {/* Logout */}
-              <TouchableOpacity
+              <TouchableOpacity 
                 style={{
                   flexDirection: 'row',
                   alignItems: 'center',
-                  paddingVertical: 12,
-                  paddingHorizontal: 15,
-                  marginBottom: 6,
+                  padding: 15,
                   backgroundColor: '#FFEBEE',
+                  marginBottom: 10,
                   borderRadius: 12,
                   borderLeftWidth: 4,
                   borderLeftColor: '#F44336',
@@ -951,49 +494,20 @@ function HamburgerMenu() {
                     ]
                   );
                 }}
-                activeOpacity={0.7}
               >
-                <View style={{
-                  width: 40,
-                  height: 40,
-                  borderRadius: 20,
-                  backgroundColor: 'white',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  marginRight: 12,
-                  elevation: 2,
-                }}>
-                  <Text style={{ fontSize: 18 }}>🚪</Text>
+                <Text style={{ fontSize: 20, marginRight: 15 }}>🚪</Text>
+                <View>
+                  <Text style={{ fontSize: 16, fontWeight: 'bold', color: '#D32F2F' }}>Logout</Text>
+                  <Text style={{ fontSize: 12, color: '#666' }}>Sign out of account</Text>
                 </View>
-                <View style={{ flex: 1 }}>
-                  <Text style={{
-                    fontSize: 15,
-                    fontWeight: 'bold',
-                    color: '#D32F2F',
-                    marginBottom: 2,
-                  }}>
-                    Logout
-                  </Text>
-                  <Text style={{
-                    fontSize: 11,
-                    color: '#666',
-                  }}>
-                    Sign out of account
-                  </Text>
-                </View>
-                <Text style={{
-                  fontSize: 16,
-                  color: '#CCC',
-                }}>
-                  ›
-                </Text>
               </TouchableOpacity>
+
             </ScrollView>
 
             {/* Footer */}
             <View style={{
-              marginTop: 10,
-              paddingTop: 10,
+              marginTop: 15,
+              paddingTop: 15,
               borderTopWidth: 1,
               borderTopColor: '#E0E0E0',
               alignItems: 'center',
@@ -1006,6 +520,7 @@ function HamburgerMenu() {
                 Kissan Setu v1.0.0 - Made with 💚 for farmers
               </Text>
             </View>
+
           </View>
         </View>
       </Modal>
