@@ -296,6 +296,7 @@ function HamburgerMenu() {
                 </View>
               </TouchableOpacity>
 
+              
               {/* Voice Assistant */}
               <TouchableOpacity 
                 style={{
@@ -319,7 +320,53 @@ function HamburgerMenu() {
                   <Text style={{ fontSize: 12, color: '#666' }}>Voice-powered help</Text>
                 </View>
               </TouchableOpacity>
+              {/* Government Schemes - ADD THIS AFTER Voice Assistant */}
+<TouchableOpacity 
+  style={{
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 15,
+    backgroundColor: '#f8f9fa',
+    marginBottom: 10,
+    borderRadius: 12,
+    borderLeftWidth: 4,
+    borderLeftColor: '#4CAF50',
+  }}
+  onPress={() => {
+    setMenuVisible(false);
+    router.push('/(tabs)/government-schemes');
+  }}
+>
+  <Text style={{ fontSize: 20, marginRight: 15 }}>🏛️</Text>
+  <View>
+    <Text style={{ fontSize: 16, fontWeight: 'bold', color: '#333' }}>Government Schemes</Text>
+    <Text style={{ fontSize: 12, color: '#666' }}>Financial support & benefits</Text>
+  </View>
+</TouchableOpacity>
+<TouchableOpacity 
+  style={{
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 15,
+    backgroundColor: '#f8f9fa',
+    marginBottom: 10,
+    borderRadius: 12,
+    borderLeftWidth: 4,
+    borderLeftColor: '#2E7D32',
+  }}
+  onPress={() => {
+    setMenuVisible(false);
+    router.push('/profit-calculator');
+  }}
+>
+  <Text style={{ fontSize: 20, marginRight: 15 }}>💰</Text>
+  <View>
+    <Text style={{ fontSize: 16, fontWeight: 'bold', color: '#333' }}>Profit Calculator</Text>
+    <Text style={{ fontSize: 12, color: '#666' }}>Calculate crop profitability</Text>
+  </View>
+</TouchableOpacity>
 
+              
               {/* SETTINGS SECTION */}
               <Text style={{
                 fontSize: 16,
@@ -656,6 +703,22 @@ export default function TabLayout() {
             ),
           }}
         />
+
+        {/* 🏛️ GOVERNMENT SCHEMES TAB - ADD THIS */}
+      <Tabs.Screen
+        name="government-schemes"
+        options={{
+          title: "Schemes",
+          tabBarIcon: ({ focused }) => (
+            <Text style={{ 
+              fontSize: 20, 
+              opacity: focused ? 1 : 0.6 
+            }}>
+              🏛️
+            </Text>
+          ),
+        }}
+      />
         
         {/* 🚫 HIDDEN TABS - Available through Sidebar Only */}
         <Tabs.Screen
