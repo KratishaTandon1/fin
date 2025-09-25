@@ -1,3 +1,4 @@
+// app/(tabs)/government-schemes.js - WITH YOUTUBE TUTORIAL LINKS
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import {
@@ -17,7 +18,7 @@ export default function GovernmentSchemesScreen() {
   const scrollViewRef = useRef(null);
   const schemeRefs = useRef({});
 
-  // Government schemes data
+  // ✅ GOVERNMENT SCHEMES DATA WITH YOUTUBE LINKS ADDED
   const governmentSchemes = [
     {
       id: 1,
@@ -45,6 +46,7 @@ export default function GovernmentSchemesScreen() {
         "Mobile Number"
       ],
       applyLink: "https://pmkisan.gov.in/",
+      youtubeLink: "https://youtu.be/Uq9ktF-QycY?si=ABNTq7NnRc-jFUIc", // ✅ YOUTUBE TUTORIAL
       color: "#4CAF50",
       status: "Active"
     },
@@ -74,6 +76,7 @@ export default function GovernmentSchemesScreen() {
         "Sowing Certificate"
       ],
       applyLink: "https://pmfby.gov.in/",
+      youtubeLink: "https://www.youtube.com/watch?v=LHy6gfFwHiE", // ✅ YOUTUBE TUTORIAL
       color: "#2196F3",
       status: "Active"
     },
@@ -104,6 +107,7 @@ export default function GovernmentSchemesScreen() {
         "Income Proof"
       ],
       applyLink: "https://www.nabard.org/content1.aspx?id=1179",
+      youtubeLink: "https://www.youtube.com/watch?v=79uGBtYLvAE", // ✅ YOUTUBE TUTORIAL
       color: "#FF9800",
       status: "Active"
     },
@@ -133,6 +137,7 @@ export default function GovernmentSchemesScreen() {
         "Age Proof"
       ],
       applyLink: "https://maandhan.in/",
+      youtubeLink: "https://www.youtube.com/watch?v=XIRmxxHjNEw", // ✅ YOUTUBE TUTORIAL
       color: "#9C27B0",
       status: "Active"
     },
@@ -160,6 +165,7 @@ export default function GovernmentSchemesScreen() {
         "Contact Details"
       ],
       applyLink: "https://soilhealth.dac.gov.in/",
+      youtubeLink: "https://www.youtube.com/watch?v=9RjWmbb-spE", // ✅ YOUTUBE TUTORIAL
       color: "#795548",
       status: "Active"
     },
@@ -189,6 +195,7 @@ export default function GovernmentSchemesScreen() {
         "Electricity Connection Details"
       ],
       applyLink: "https://mnre.gov.in/solar/schemes/",
+      youtubeLink: "https://www.youtube.com/watch?v=9JMTUiVcwS4", // ✅ YOUTUBE TUTORIAL
       color: "#FFC107",
       status: "Active"
     }
@@ -243,6 +250,32 @@ export default function GovernmentSchemesScreen() {
               }
             } catch (error) {
               Alert.alert("Error", "Failed to open the website. Please check your internet connection.");
+            }
+          }
+        }
+      ]
+    );
+  };
+
+  // ✅ NEW YOUTUBE TUTORIAL FUNCTION
+  const handleWatchTutorial = async (scheme) => {
+    Alert.alert(
+      "🎥 Watch Tutorial",
+      `Learn how to apply for ${scheme.name} with step-by-step video guide in Hindi/English.`,
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Open YouTube",
+          onPress: async () => {
+            try {
+              const supported = await Linking.canOpenURL(scheme.youtubeLink);
+              if (supported) {
+                await Linking.openURL(scheme.youtubeLink);
+              } else {
+                Alert.alert("Error", "Cannot open YouTube. Please check if YouTube app is installed.");
+              }
+            } catch (error) {
+              Alert.alert("Error", "Failed to open YouTube video. Please check your internet connection.");
             }
           }
         }
@@ -389,6 +422,17 @@ export default function GovernmentSchemesScreen() {
                 >
                   <Text style={styles.applyButtonText}>🌐 Apply Now - Official Website</Text>
                 </TouchableOpacity>
+
+                {/* ✅ NEW YOUTUBE TUTORIAL BUTTON */}
+                <TouchableOpacity 
+                  style={[styles.tutorialButton, { borderColor: scheme.color }]}
+                  onPress={() => handleWatchTutorial(scheme)}
+                >
+                  <Text style={[styles.tutorialButtonText, { color: scheme.color }]}>
+                    🎥 Watch "How to Apply" Tutorial
+                  </Text>
+                </TouchableOpacity>
+
               </View>
             )}
           </View>
@@ -650,6 +694,21 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
+  
+  // ✅ NEW YOUTUBE TUTORIAL BUTTON STYLES
+  tutorialButton: {
+    padding: 15,
+    borderRadius: 25,
+    alignItems: 'center',
+    marginTop: 10,
+    borderWidth: 2,
+    backgroundColor: 'white',
+  },
+  tutorialButtonText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  
   helpSection: {
     backgroundColor: '#FFF3E0',
     margin: 20,

@@ -751,6 +751,14 @@ export default function TabLayout() {
             href: null, // Hidden from footer
           }}
         />
+
+
+        <Tabs.Screen
+          name="profit-calculator"
+          options={{
+            href: null, // Hidden from footer
+          }}
+        />
       </Tabs>
     </>
   );
